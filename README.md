@@ -6,6 +6,7 @@ It contains also a snippet to run Spark SQL on Cosmos DB and return the results
 Example usages:
 
 ```csharp
+// Use LivyClient instead of HdInsightClient if not on Azure
 using (var client = new HdInsightClient("clusterName", "admin", "password"))
 using (var session = await client.CreateSessionAsync(config))
 {
