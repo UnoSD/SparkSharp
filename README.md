@@ -32,3 +32,5 @@ using (var session = await client.CreateSessionAsync(config))
     cosmos.ToList().ForEach(t => Console.WriteLine($"{t.id}:{t.total}"));
 }
 ```
+
+Cosmos DB connector for Spark jars available here (with the guide in the wiki on how to set it up in HDInsight): https://github.com/Azure/azure-cosmosdb-spark/tree/master/releases
