@@ -35,4 +35,4 @@ using (var session = await client.CreateSessionAsync(config))
 
 Cosmos DB connector for Spark jars available here (with the guide in the wiki on how to set it up in HDInsight): https://github.com/Azure/azure-cosmosdb-spark/tree/master/releases
 
-On exceptions, kill the dangling session from here: https://<yourHdInsightClusterName>.azurehdinsight.net/yarnui/hn/cluster/apps/RUNNING
+On exceptions, kill the dangling session from here: https://\<yourHdInsightClusterName\>.azurehdinsight.net/yarnui/hn/cluster/apps/RUNNING
