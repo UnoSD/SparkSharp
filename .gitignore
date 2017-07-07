@@ -287,3 +287,4 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 /SparkSharp/SetupConfig.txt
+/HDInsightARMTemplate.zip
