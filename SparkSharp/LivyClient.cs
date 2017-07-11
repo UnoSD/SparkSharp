@@ -41,7 +41,9 @@ namespace SparkSharp
         public async Task<ILivySession> CreateSessionAsync(LivySessionConfiguration config)
         {
             config = config ?? LivySessionConfiguration.Default;
-            
+
+            Logger.Trace("Creating session...");
+
             var response = await _client.Value.PostAsync("sessions", config).ConfigureAwait(false);
             
             response.EnsureSuccessStatusCode();

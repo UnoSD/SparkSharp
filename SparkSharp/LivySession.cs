@@ -39,7 +39,13 @@ namespace SparkSharp
 
         public async Task<T> ExecuteStatementAsync<T>(string code)
         {
+            Logger.Trace("Waiting for session to be ready...");
+
             await WaitForSessionAsync().ConfigureAwait(false);
+
+            Logger.Trace("Session ready");
+
+            Logger.Trace("Running code...");
 
             var response = await _client.PostAsync($"{_sessionPath}/statements", new { code })
                                         .ConfigureAwait(false);
@@ -48,8 +54,12 @@ namespace SparkSharp
 
             var resultPollingRelativePath = response.Headers.Location.AsRelativePath();
 
+            Logger.Trace("Waiting for results to be ready...");
+
             var result = await WaitForStateAsync(resultPollingRelativePath, "available");
             var data = result["output"]["data"]["text/plain"].ToString();
+
+            Logger.Trace("Results ready");
 
             return JsonConvert.DeserializeObject<T>(data);
         }

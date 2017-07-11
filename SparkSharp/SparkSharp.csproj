@@ -49,6 +49,7 @@
     <Compile Include="LivySession.cs" />
     <Compile Include="LivySessionConfiguration.cs" />
     <Compile Include="LivySessionKind.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

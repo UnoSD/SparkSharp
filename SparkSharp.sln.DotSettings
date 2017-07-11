@@ -5,8 +5,13 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=XAML_005FFIELD/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=XAML_005FRESOURCE/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/Environment/Hierarchy/PsiConfigurationSettingsKey/CustomLocation/@EntryValue">C:\Users\stefano.dantonio\AppData\Local\JetBrains\Transient\ReSharperPlatformVs15\v08_ea10e25a\SolutionCaches</s:String>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F079E60D6EEFF14C8887D12219C38754/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F079E60D6EEFF14C8887D12219C38754/AbsolutePath/@EntryValue">C:\Users\stefano.dantonio\Desktop\SparkSharp\SparkSharp.sln.DotSettings</s:String>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F079E60D6EEFF14C8887D12219C38754/RelativePath/@EntryValue"></s:String>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileF079E60D6EEFF14C8887D12219C38754/@KeyIndexDefined">True</s:Boolean>
-	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileF079E60D6EEFF14C8887D12219C38754/RelativePriority/@EntryValue">1</s:Double></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=B7FB1FA751C47142A202C2C15E78CD1E/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=B7FB1FA751C47142A202C2C15E78CD1E/AbsolutePath/@EntryValue">C:\git\SparkSharp\SparkSharp.sln.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=B7FB1FA751C47142A202C2C15E78CD1E/RelativePath/@EntryValue"></s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileB7FB1FA751C47142A202C2C15E78CD1E/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileB7FB1FA751C47142A202C2C15E78CD1E/RelativePriority/@EntryValue">1</s:Double>
+	
+	
+	
+	
+	</wpf:ResourceDictionary>
