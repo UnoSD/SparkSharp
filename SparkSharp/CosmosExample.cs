@@ -26,17 +26,16 @@ namespace SparkSharp
             using (var client = new HdInsightClient(clusterName, "admin", password))
             using (var cosmos = new CosmosDbLivySession(client, cosmosSettings, SessionConfiguration.GetDefaultCosmosConfiguration()))
             {
-                const string sql = "SELECT contactIdentifier, COUNT(*) AS Count FROM cosmos GROUP BY contactIdentifier ORDER BY COUNT(*) DESC LIMIT 20";
+                const string sql = "SELECT contactIdentifier AS ContactIdentifier, COUNT(*) AS Count FROM cosmos GROUP BY contactIdentifier ORDER BY COUNT(*) DESC LIMIT 20";
+
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
 
                 var results = await cosmos.QuerySparkSqlAsync<IEnumerable<Result>>(sql);
 
-                Debugger.Break();
+                Console.WriteLine($"Elpsed: {stopwatch.Elapsed}");
 
-                results = await cosmos.QuerySparkSqlAsync<IEnumerable<Result>>(sql);
-
-                Debugger.Break();
-
-                results.ToList().ForEach(t => Console.WriteLine($"{t.ContactIdentifier}:{t.OrderTotal}"));
+                results.ToList().ForEach(t => Console.WriteLine($"{t.ContactIdentifier}:{t.Count}"));
             }
 
             Console.ReadKey();
@@ -47,7 +46,7 @@ namespace SparkSharp
         {
             // ReSharper disable UnusedAutoPropertyAccessor.Local
             public int ContactIdentifier { get; set; }
-            public decimal OrderTotal { get; set; }
+            public decimal Count { get; set; }
             // ReSharper restore UnusedAutoPropertyAccessor.Local
         }
     }
