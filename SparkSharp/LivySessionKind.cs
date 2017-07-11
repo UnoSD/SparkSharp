@@ -1,6 +1,6 @@
 ﻿namespace SparkSharp
 {
-    enum LivySessionKind
+    public enum LivySessionKind
     {
         Spark = 1
     }

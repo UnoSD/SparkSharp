@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 
 namespace SparkSharp
 {
-    class LivySessionConfiguration
+    public class LivySessionConfiguration
     {
         public static LivySessionConfiguration Default { get; } = new LivySessionConfiguration
         {

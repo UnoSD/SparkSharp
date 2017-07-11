@@ -56,7 +56,7 @@ namespace SparkSharp
 
             Logger.Trace("Waiting for results to be ready...");
 
-            var result = await WaitForStateAsync(resultPollingRelativePath, "available");
+            var result = await WaitForStateAsync(resultPollingRelativePath, "available").ConfigureAwait(false);
             var data = result["output"]["data"]["text/plain"].ToString();
 
             Logger.Trace("Results ready");
