@@ -66,7 +66,7 @@ val config = Config(Map(""Endpoint""         -> ""https://{_settings.Name}.docum
                         ""Collection""       -> ""{_settings.Collection}"", 
                         ""SamplingRatio""    -> ""1.0""))
 
-spark.sqlContext.read.cosmosDB(config).collection.createOrReplaceTempView(""cosmos"")
+spark.sqlContext.read.cosmosDB(config).createOrReplaceTempView(""cosmos"")
 ";
 
         public void Dispose()
