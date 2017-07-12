@@ -38,7 +38,7 @@ namespace SparkSharp
 
         public void Dispose() => CloseAsync().Wait();
 
-        public async Task<IEnumerable<T>> ExecuteStatementAsync<T>(string code)
+        public async Task<T> ExecuteStatementAsync<T>(string code)
         {
             Logger.Trace("Waiting for session to be ready...");
 
@@ -62,7 +62,7 @@ namespace SparkSharp
 
             Logger.Trace("Results ready");
 
-            return JsonConvert.DeserializeObject<IEnumerable<T>>(data);
+            return JsonConvert.DeserializeObject<T>(data);
         }
 
         public Task WaitForSessionAsync() => WaitForStateAsync(_sessionPath, "idle");

@@ -52,7 +52,7 @@ docs.createOrReplaceTempView(""docs"")
 println(docs.toJSON.collect.mkString(""["", "","", ""]""))
 ";
 
-            return await session.ExecuteStatementAsync<T>(scalaCode).ConfigureAwait(false);
+            return await session.ExecuteStatementAsync<IEnumerable<T>>(scalaCode).ConfigureAwait(false);
         }
 
         string GetInitializeContextCode() => $@"
