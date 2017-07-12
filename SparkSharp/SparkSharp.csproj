@@ -41,6 +41,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationSettings.cs" />
     <Compile Include="CosmosCollectionSettings.cs" />
     <Compile Include="CosmosDbLivySession.cs" />
     <Compile Include="CosmosExample.cs" />

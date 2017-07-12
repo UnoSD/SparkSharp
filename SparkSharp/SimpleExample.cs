@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Configuration;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 
 namespace SparkSharp
 {
     class SimpleExample
     {
-        internal static async Task ExampleAsync()
+        internal static async Task ExampleAsync(NameValueCollection settings)
         {
-            var settings = ConfigurationManager.AppSettings;
-
             using (var client = new HdInsightClient(settings["ClusterName"], settings["ClusterUsername"], settings["ClusterPassword"]))
             using (var session = await client.CreateSessionAsync(SimpleExampleSessionConfiguration.GetConfiguration()))
             {

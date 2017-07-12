@@ -1,8 +1,15 @@
-﻿namespace SparkSharp
+﻿using System.Configuration;
+
+namespace SparkSharp
 {
     static class Program
     {
-        //static void Main() => SimpleExample.ExampleAsync().GetAwaiter().GetResult();
-        static void Main() => CosmosExample.ExampleAsync().GetAwaiter().GetResult();
+        static void Main()
+        {
+            //ApplicationSettings.SetupSettings();
+
+            SimpleExample.ExampleAsync(ConfigurationManager.AppSettings).GetAwaiter().GetResult();
+            //CosmosExample.ExampleAsync(ConfigurationManager.AppSettings).GetAwaiter().GetResult();
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿// ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 using System;
-using System.Configuration;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,13 +9,10 @@ namespace SparkSharp
 {
     class CosmosExample
     {
-        internal static async Task ExampleAsync()
+        internal static async Task ExampleAsync(NameValueCollection settings)
         {
-            var settings = ConfigurationManager.AppSettings;
-            var cosmosSettings = CosmosSettings.GetSettings(settings);
-
             using (var client = new HdInsightClient(settings["ClusterName"], settings["ClusterUsername"], settings["ClusterPassword"]))
-            using (var cosmos = new CosmosDbLivySession(client, cosmosSettings, CosmosExampleSessionConfiguration.GetConfiguration()))
+            using (var cosmos = new CosmosDbLivySession(client, CosmosSettings.GetSettings(settings), CosmosExampleSessionConfiguration.GetConfiguration()))
             {
                 const string sql = "SELECT contactIdentifier AS ContactIdentifier, COUNT(*) AS Count FROM cosmos GROUP BY contactIdentifier ORDER BY COUNT(*) DESC LIMIT 20";
                 
