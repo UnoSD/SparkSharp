@@ -1,8 +1,8 @@
 ﻿namespace SparkSharp
 {
-    class SessionConfiguration
+    class CosmosExampleSessionConfiguration
     {
-        internal static LivySessionConfiguration GetDefaultCosmosConfiguration() => 
+        internal static LivySessionConfiguration GetConfiguration() => 
             new LivySessionConfiguration
             {
                 Kind = LivySessionKind.Spark,

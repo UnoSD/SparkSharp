@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReSharper disable ClassNeverInstantiated.Local
+// ReSharper disable UnusedAutoPropertyAccessor.Local
+using System;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,19 +12,10 @@ namespace SparkSharp
         internal static async Task ExampleAsync()
         {
             var settings = ConfigurationManager.AppSettings;
-            var clusterName = settings["ClusterName"];
-            var password = settings["ClusterPassword"];
-            var cosmosSettings = new CosmosCollectionSettings
-            {
-                Name = settings["CosmosName"],
-                Key = settings["CosmosKey"],
-                Database = settings["CosmosDatabase"],
-                Collection = settings["CosmosCollection"],
-                PreferredRegions = settings["CosmosPreferredRegions"]
-            };
+            var cosmosSettings = CosmosSettings.GetSettings(settings);
 
-            using (var client = new HdInsightClient(clusterName, "admin", password))
-            using (var cosmos = new CosmosDbLivySession(client, cosmosSettings, SessionConfiguration.GetDefaultCosmosConfiguration()))
+            using (var client = new HdInsightClient(settings["ClusterName"], settings["ClusterUsername"], settings["ClusterPassword"]))
+            using (var cosmos = new CosmosDbLivySession(client, cosmosSettings, CosmosExampleSessionConfiguration.GetConfiguration()))
             {
                 const string sql = "SELECT contactIdentifier AS ContactIdentifier, COUNT(*) AS Count FROM cosmos GROUP BY contactIdentifier ORDER BY COUNT(*) DESC LIMIT 20";
                 
@@ -35,14 +28,11 @@ namespace SparkSharp
 
             Console.ReadKey();
         }
-
-        // ReSharper disable once ClassNeverInstantiated.Local
+        
         class Result
         {
-            // ReSharper disable UnusedAutoPropertyAccessor.Local
             public int ContactIdentifier { get; set; }
             public decimal Count { get; set; }
-            // ReSharper restore UnusedAutoPropertyAccessor.Local
         }
     }
 }
