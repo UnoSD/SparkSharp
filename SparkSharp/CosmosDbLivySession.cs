@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SparkSharp
@@ -18,7 +20,22 @@ namespace SparkSharp
         /// Use cosmos as source.
         /// Example: SELECT * FROM cosmos
         /// </summary>
-        public async Task<T> QuerySparkSqlAsync<T>(string sql)
+        public async Task<TimedResult<IEnumerable<T>>> QuerySparkSqlWithMetricsAsync<T>(string sql)
+        {
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
+            var results = await QuerySparkSqlAsync<T>(sql).ConfigureAwait(false);
+            
+            return new TimedResult<IEnumerable<T>> { Result = results, Elapsed = stopwatch.Elapsed };
+        }
+
+        /// <summary>
+        /// Use cosmos as source.
+        /// Example: SELECT * FROM cosmos
+        /// </summary>
+        public async Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sql)
         {
             var initializeContextCode = _session.IsValueCreated ?
                                         string.Empty :

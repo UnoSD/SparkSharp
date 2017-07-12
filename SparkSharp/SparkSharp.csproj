@@ -58,6 +58,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionConfiguration.cs" />
     <Compile Include="SimpleExample.cs" />
+    <Compile Include="TimedResult.cs" />
     <Compile Include="UriExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

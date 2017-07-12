@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,15 +25,12 @@ namespace SparkSharp
             using (var cosmos = new CosmosDbLivySession(client, cosmosSettings, SessionConfiguration.GetDefaultCosmosConfiguration()))
             {
                 const string sql = "SELECT contactIdentifier AS ContactIdentifier, COUNT(*) AS Count FROM cosmos GROUP BY contactIdentifier ORDER BY COUNT(*) DESC LIMIT 20";
+                
+                var result = await cosmos.QuerySparkSqlWithMetricsAsync<Result>(sql);
 
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
+                Console.WriteLine($"Elpsed: {result.Elapsed}");
 
-                var results = await cosmos.QuerySparkSqlAsync<IEnumerable<Result>>(sql);
-
-                Console.WriteLine($"Elpsed: {stopwatch.Elapsed}");
-
-                results.ToList().ForEach(t => Console.WriteLine($"{t.ContactIdentifier}:{t.Count}"));
+                result.Result.ToList().ForEach(t => Console.WriteLine($"{t.ContactIdentifier}:{t.Count}"));
             }
 
             Console.ReadKey();

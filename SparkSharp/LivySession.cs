@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -37,7 +38,7 @@ namespace SparkSharp
 
         public void Dispose() => CloseAsync().Wait();
 
-        public async Task<T> ExecuteStatementAsync<T>(string code)
+        public async Task<IEnumerable<T>> ExecuteStatementAsync<T>(string code)
         {
             Logger.Trace("Waiting for session to be ready...");
 
@@ -61,7 +62,7 @@ namespace SparkSharp
 
             Logger.Trace("Results ready");
 
-            return JsonConvert.DeserializeObject<T>(data);
+            return JsonConvert.DeserializeObject<IEnumerable<T>>(data);
         }
 
         public Task WaitForSessionAsync() => WaitForStateAsync(_sessionPath, "idle");
