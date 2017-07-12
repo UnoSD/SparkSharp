@@ -47,7 +47,6 @@ namespace SparkSharp
 {initializeContextCode}
 
 val docs = spark.sql(""{sql}"")
-docs.createOrReplaceTempView(""docs"")
 
 println(docs.toJSON.collect.mkString(""["", "","", ""]""))
 ";
@@ -67,8 +66,7 @@ val config = Config(Map(""Endpoint""         -> ""https://{_settings.Name}.docum
                         ""Collection""       -> ""{_settings.Collection}"", 
                         ""SamplingRatio""    -> ""1.0""))
 
-val collection = spark.sqlContext.read.cosmosDB(config)
-collection.createOrReplaceTempView(""cosmos"")
+spark.sqlContext.read.cosmosDB(config).collection.createOrReplaceTempView(""cosmos"")
 ";
 
         public void Dispose()
