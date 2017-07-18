@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -58,11 +59,23 @@ namespace SparkSharp
             Logger.Trace("Waiting for results to be ready...");
 
             var result = await WaitForStateAsync(resultPollingRelativePath, "available").ConfigureAwait(false);
-            var data = result["output"]["data"]["text/plain"].ToString();
+            var output = result["output"];
+
+            ThrowIfError(output);
+
+            var data = output["data"]["text/plain"].ToString();
 
             Logger.Trace("Results ready");
 
             return JsonConvert.DeserializeObject<T>(data);
+        }
+
+        static void ThrowIfError(JToken output)
+        {
+            var error = output["status"].ToString() == "error";
+
+            if (error)
+                throw new Exception($"{output["evalue"]}\n\n{output["traceback"]}");
         }
 
         public Task WaitForSessionAsync() => WaitForStateAsync(_sessionPath, "idle");
