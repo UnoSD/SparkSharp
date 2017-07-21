@@ -12,5 +12,8 @@ namespace SparkSharp
 
         public static string ToJsonString(this object value) => 
             JsonConvert.SerializeObject(value, JsonSerializerSettings);
+
+        // TODO: Replace this hacky cloning
+        public static T Clone<T>(this T obj) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
     }
 }

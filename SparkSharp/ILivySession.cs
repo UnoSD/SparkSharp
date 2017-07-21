@@ -7,5 +7,7 @@ namespace SparkSharp
     {
         Task<T> ExecuteStatementAsync<T>(string code);
         Task WaitForSessionAsync();
+        Task CloseAsync();
+        Task<string> GetSessionStateAsync();
     }
 }

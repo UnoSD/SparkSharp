@@ -50,6 +50,7 @@
     <Compile Include="HttpClientExtensions.cs" />
     <Compile Include="ILivyClient.cs" />
     <Compile Include="ILivySession.cs" />
+    <Compile Include="ISparkSqlSession.cs" />
     <Compile Include="LivyClient.cs" />
     <Compile Include="LivySession.cs" />
     <Compile Include="LivySessionConfiguration.cs" />

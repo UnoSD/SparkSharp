@@ -14,9 +14,7 @@ namespace SparkSharp
         readonly LivySessionConfiguration _config;
         readonly string _sessionPath;
 
-        // TODO: Replace this hacky cloning
-        public LivySessionConfiguration Configuration =>
-            JsonConvert.DeserializeObject<LivySessionConfiguration>(JsonConvert.SerializeObject(_config));
+        public LivySessionConfiguration Configuration => _config.Clone();
 
         public LivySession(HttpClient client, LivySessionConfiguration config, string sessionPath)
         {
@@ -105,6 +103,15 @@ namespace SparkSharp
             var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return JObject.Parse(result);
+        }
+
+        public async Task<string> GetSessionStateAsync()
+        {
+            var jObject = await GetResultAsync(_sessionPath).ConfigureAwait(false);
+
+            var state = jObject["state"].ToString();
+
+            return state;
         }
     }
 }

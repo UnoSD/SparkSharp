@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SparkSharp
 {
-    public class CosmosDbLivySession : IDisposable
+    public class CosmosDbLivySession : IDisposable, ISparkSqlSession
     {
         readonly CosmosCollectionSettings _settings;
         readonly Lazy<Task<ILivySession>> _session;
+        static int _sessionCount;
 
         public CosmosDbLivySession(ILivyClient client, CosmosCollectionSettings settings, LivySessionConfiguration livyConfig)
         {
             _settings = settings;
-            _session = new Lazy<Task<ILivySession>>(() => client.CreateSessionAsync(livyConfig));
+            _session = new Lazy<Task<ILivySession>>(() =>
+            {
+                var livySessionConfiguration = livyConfig.Clone();
+                livySessionConfiguration.Name += " " + Interlocked.Increment(ref _sessionCount);
+                return client.CreateSessionAsync(livySessionConfiguration);
+            });
         }
 
         /// <summary>
@@ -29,6 +36,25 @@ namespace SparkSharp
             var results = await QuerySparkSqlAsync<T>(sql).ConfigureAwait(false);
             
             return new TimedResult<IEnumerable<T>> { Result = results, Elapsed = stopwatch.Elapsed };
+        }
+
+        public async Task WaitForSessionAsync()
+        {
+            var session = await _session.Value.ConfigureAwait(false);
+
+            await session.WaitForSessionAsync().ConfigureAwait(false);
+        }
+
+        public async Task<bool> GetSessionAvailableAsync()
+        {
+            if (!_session.IsValueCreated)
+                return false;
+
+            var session = await _session.Value.ConfigureAwait(false);
+
+            var state = await session.GetSessionStateAsync().ConfigureAwait(false);
+
+            return state == "idle";
         }
 
         /// <summary>
@@ -69,10 +95,12 @@ val config = Config(Map(""Endpoint""         -> ""https://{_settings.Name}.docum
 spark.sqlContext.read.cosmosDB(config).createOrReplaceTempView(""cosmos"")
 ";
 
-        public void Dispose()
+        public void Dispose() => CloseAsync().GetAwaiter().GetResult();
+
+        public async Task CloseAsync()
         {
             if (_session.IsValueCreated)
-                _session.Value.Result.Dispose();
+                await (await _session.Value.ConfigureAwait(false)).CloseAsync().ConfigureAwait(false);
         }
     }
 }
