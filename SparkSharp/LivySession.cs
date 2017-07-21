@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -10,6 +8,8 @@ namespace SparkSharp
 {
     class LivySession : ILivySession
     {
+        static readonly JObject ErrorJObject = new JObject { { "state", "error" } };
+
         readonly HttpClient _client;
         readonly LivySessionConfiguration _config;
         readonly string _sessionPath;
@@ -84,25 +84,27 @@ namespace SparkSharp
         {
             while (true)
             {
-                var message = new HttpRequestMessage(HttpMethod.Get, pollingUri);
-                message.Headers.Accept.Clear();
-                message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var response = await _client.SendAsync(message).ConfigureAwait(false);
-
-                if (!response.IsSuccessStatusCode)
-                    continue;
-
-                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                var jObject = JObject.Parse(result);
+                var jObject = await GetResultAsync(pollingUri).ConfigureAwait(false);
                 var state = jObject["state"].ToString();
-                
+
                 if (state == expectedState)
                     return jObject;
 
                 // TODO: Decide a reasonable configurable delay
                 await Task.Delay(100).ConfigureAwait(false);
             }
+        }
+
+        async Task<JObject> GetResultAsync(string uri)
+        {
+            var response = await _client.GetAsync(uri).ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+                return ErrorJObject;
+
+            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return JObject.Parse(result);
         }
     }
 }
