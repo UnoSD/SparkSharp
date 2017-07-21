@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SparkSharp", "SparkSharp\SparkSharp.csproj", "{7BB05EC0-613B-41A5-9740-6DA5688EBD1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{1D2A599E-2C3C-4D41-A0B0-298844E3CCB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{7BB05EC0-613B-41A5-9740-6DA5688EBD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BB05EC0-613B-41A5-9740-6DA5688EBD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BB05EC0-613B-41A5-9740-6DA5688EBD1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D2A599E-2C3C-4D41-A0B0-298844E3CCB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D2A599E-2C3C-4D41-A0B0-298844E3CCB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D2A599E-2C3C-4D41-A0B0-298844E3CCB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D2A599E-2C3C-4D41-A0B0-298844E3CCB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
