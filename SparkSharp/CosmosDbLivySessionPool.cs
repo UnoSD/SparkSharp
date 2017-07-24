@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 
 namespace SparkSharp
 {
-    public partial class CosmosDbLivySessionPool : IDisposable
+    public class CosmosDbLivySessionPool : IDisposable
     {
         readonly ILivyClient _client;
         readonly CosmosCollectionSettings _cosmosCollectionSettings;
         readonly LivySessionConfiguration _livySessionConfiguration;
         readonly int _maxSessions;
         readonly ConcurrentBag<CosmosDbLivySession> _sessions = new ConcurrentBag<CosmosDbLivySession>();
-        readonly ConcurrentQueue<Func<CosmosDbLivySession, Task>> _jobs = new ConcurrentQueue<Func<CosmosDbLivySession, Task>>();
 
         public CosmosDbLivySessionPool(ILivyClient client, CosmosCollectionSettings cosmosCollectionSettings, LivySessionConfiguration livySessionConfiguration, int maxSessions)
         {
