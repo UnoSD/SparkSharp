@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 
 namespace SparkSharp
 {
@@ -8,6 +9,10 @@ namespace SparkSharp
         {
             var configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             var mySettings = configuration.AppSettings.Settings;
+            var firstRun = mySettings["FirstRun"]?.Value.AsBooleanOrDefault(true) ?? true;
+
+            if (!firstRun)
+                return;
 
             void SetConfig(string key, string value)
             {
@@ -17,14 +22,24 @@ namespace SparkSharp
                     mySettings[key].Value = value;
             }
 
-            SetConfig("ClusterName", "");
-            SetConfig("ClusterUsername", "admin");
-            SetConfig("ClusterPassword", "");
-            SetConfig("CosmosName", "");
-            SetConfig("CosmosKey", "");
-            SetConfig("CosmosDatabase", "");
-            SetConfig("CosmosCollection", "");
-            SetConfig("CosmosPreferredRegions", "North Europe");
+            void SetConfigFromUserInput(string key, string defaultValue = null)
+            {
+                Console.Write($"Insert {key} [{defaultValue}]: ");
+                var value = Console.ReadLine();
+                SetConfig(key, string.IsNullOrWhiteSpace(value) ? defaultValue : value);
+            }
+
+            SetConfigFromUserInput("ClusterName");
+            SetConfigFromUserInput("ClusterUsername", "admin");
+            SetConfigFromUserInput("ClusterPassword");
+            SetConfigFromUserInput("CosmosName");
+            SetConfigFromUserInput("CosmosKey");
+            SetConfigFromUserInput("CosmosDatabase");
+            SetConfigFromUserInput("CosmosCollection");
+            SetConfigFromUserInput("CosmosPreferredRegions", "North Europe");
+
+            SetConfig("FirstRun", "False");
+
             configuration.Save();
         }
     }
