@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SparkSharp
 {
-    class SimpleExample
+    static class SimpleExample
     {
         internal static async Task ExampleAsync(NameValueCollection settings)
         {

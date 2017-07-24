@@ -37,6 +37,7 @@ namespace SparkSharp
             SetConfigFromUserInput("CosmosDatabase");
             SetConfigFromUserInput("CosmosCollection");
             SetConfigFromUserInput("CosmosPreferredRegions", "North Europe");
+            SetConfigFromUserInput("AutoStartExample", "SimpleExample");
 
             SetConfig("FirstRun", "False");
 

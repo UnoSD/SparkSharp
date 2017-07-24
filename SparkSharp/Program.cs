@@ -8,8 +8,17 @@ namespace SparkSharp
         {
             ApplicationSettings.SetupSettings();
 
-            SimpleExample.ExampleAsync(ConfigurationManager.AppSettings).GetAwaiter().GetResult();
-            //CosmosExample.ExampleAsync(ConfigurationManager.AppSettings).GetAwaiter().GetResult();
+            var settings = ConfigurationManager.AppSettings;
+
+            switch (settings["AutoStartExample"])
+            {
+                case nameof(CosmosExample):
+                    CosmosExample.ExampleAsync(settings).GetAwaiter().GetResult();
+                    break;
+                default:
+                    SimpleExample.ExampleAsync(settings).GetAwaiter().GetResult();
+                    break;
+            }
         }
     }
 }
