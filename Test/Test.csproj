@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncLimitedObjectPoolTest.cs" />
+    <Compile Include="CosmosDbLivySessionPoolTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

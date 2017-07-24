@@ -45,12 +45,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationSettings.cs" />
+    <Compile Include="AsyncLimitedDisposableObjectPool.cs" />
     <Compile Include="AsyncLimitedObjectPool.cs" />
     <Compile Include="AsyncObjectPool.cs" />
+    <Compile Include="CosmosDbLivyObjectPooledSession.cs" />
+    <Compile Include="CosmosDbLivyPooledSession.cs" />
     <Compile Include="CosmosCollectionSettings.cs" />
     <Compile Include="CosmosDbLivySession.cs" />
+    <Compile Include="CosmosDbLivySessionPool.cs" />
     <Compile Include="CosmosExample.cs" />
     <Compile Include="CosmosSettings.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="HdInsightClient.cs" />
     <Compile Include="HttpClientExtensions.cs" />
     <Compile Include="ILivyClient.cs" />
@@ -67,6 +72,7 @@
     <Compile Include="CosmosExampleSessionConfiguration.cs" />
     <Compile Include="SimpleExample.cs" />
     <Compile Include="SimpleExampleSessionConfiguration.cs" />
+    <Compile Include="TaskExtensions.cs" />
     <Compile Include="TimedResult.cs" />
     <Compile Include="UriExtensions.cs" />
   </ItemGroup>
