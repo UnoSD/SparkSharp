@@ -11,7 +11,7 @@ namespace SparkSharp
             var mySettings = configuration.AppSettings.Settings;
             var firstRun = mySettings["FirstRun"]?.Value.AsBooleanOrDefault(true) ?? true;
 
-            if (!firstRun)
+            if (!(firstRun || Console.KeyAvailable && Console.ReadKey().Key == ConsoleKey.S))
                 return;
 
             void SetConfig(string key, string value)
@@ -24,6 +24,8 @@ namespace SparkSharp
 
             void SetConfigFromUserInput(string key, string defaultValue = null)
             {
+                defaultValue = mySettings[key]?.Value ?? defaultValue;
+                
                 Console.Write($"Insert {key} [{defaultValue}]: ");
                 var value = Console.ReadLine();
                 SetConfig(key, string.IsNullOrWhiteSpace(value) ? defaultValue : value);
