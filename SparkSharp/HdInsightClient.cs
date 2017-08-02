@@ -1,6 +1,6 @@
 ﻿namespace SparkSharp
 {
-    class HdInsightClient : LivyClient
+    public class HdInsightClient : LivyClient
     {
         public HdInsightClient(string clusterName, string username, string password) :
             base(GetLivyUrl(clusterName), username, password) { }

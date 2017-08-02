@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 
 namespace SparkSharp
 {
@@ -10,8 +11,13 @@ namespace SparkSharp
 
             var settings = ConfigurationManager.AppSettings;
 
+            Console.WriteLine(settings["AutoStartExample"]);
+
             switch (settings["AutoStartExample"])
             {
+                case nameof(CosmosPoolingExample):
+                    CosmosPoolingExample.ExampleAsync(settings).GetAwaiter().GetResult();
+                    break;
                 case nameof(CosmosExample):
                     CosmosExample.ExampleAsync(settings).GetAwaiter().GetResult();
                     break;

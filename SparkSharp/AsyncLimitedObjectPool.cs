@@ -9,7 +9,7 @@ namespace SparkSharp
     {
         readonly Func<Task<T>> _factory;
         readonly int _maxObjects;
-        readonly ConcurrentQueue<T> _availableObjects = new ConcurrentQueue<T>();
+        protected readonly ConcurrentQueue<T> AvailableObjects = new ConcurrentQueue<T>();
         readonly ConcurrentQueue<TaskCompletionSource<T>> _availablePromises = new ConcurrentQueue<TaskCompletionSource<T>>();
         int _rented;
 
@@ -25,7 +25,7 @@ namespace SparkSharp
 
         public ValueTask<T> RentAsync()
         {
-            if (_availableObjects.TryDequeue(out var obj))
+            if (AvailableObjects.TryDequeue(out var obj))
                 return new ValueTask<T>(obj);
 
             if (_rented >= _maxObjects)
@@ -49,7 +49,7 @@ namespace SparkSharp
             if(_availablePromises.TryDequeue(out var promise))
                 promise.SetResult(obj);
             
-            _availableObjects.Enqueue(obj);
+            AvailableObjects.Enqueue(obj);
         }
     }
 }

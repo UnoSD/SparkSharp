@@ -1,6 +1,6 @@
 ﻿namespace SparkSharp
 {
-    class SimpleExampleSessionConfiguration
+    static class SimpleExampleSessionConfiguration
     {
         internal static LivySessionConfiguration GetConfiguration() =>
             new LivySessionConfiguration

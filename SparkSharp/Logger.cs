@@ -2,7 +2,7 @@
 
 namespace SparkSharp
 {
-    class Logger
+    static class Logger
     {
         internal static void Trace(string message) => Console.WriteLine(message);
     }

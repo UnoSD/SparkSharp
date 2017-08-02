@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationSettings.cs" />
+    <Compile Include="AsyncLimitedDisposableDisposableObjectPool.cs" />
     <Compile Include="AsyncLimitedDisposableObjectPool.cs" />
     <Compile Include="AsyncLimitedObjectPool.cs" />
     <Compile Include="AsyncObjectPool.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="CosmosDbLivySession.cs" />
     <Compile Include="CosmosDbLivySessionPool.cs" />
     <Compile Include="CosmosExample.cs" />
+    <Compile Include="CosmosPoolingExample.cs" />
     <Compile Include="CosmosSettings.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="HdInsightClient.cs" />

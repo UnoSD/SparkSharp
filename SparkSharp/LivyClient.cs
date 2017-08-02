@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SparkSharp
 {
-    class LivyClient : ILivyClient
+    public class LivyClient : ILivyClient
     {
         readonly Lazy<HttpClient> _client;
 
@@ -34,8 +34,8 @@ namespace SparkSharp
 
         public void Dispose()
         {
-            //if (_client.IsValueCreated)
-            //    _client.Value.Dispose();
+            if (_client.IsValueCreated)
+                _client.Value.Dispose();
         }
 
         public async Task<ILivySession> CreateSessionAsync(LivySessionConfiguration config)

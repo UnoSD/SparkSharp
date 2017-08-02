@@ -80,13 +80,13 @@ namespace SparkSharp
 
         async Task<JObject> WaitForStateAsync(string pollingUri, string expectedState)
         {
-            //string state = null;
-
-            //for (var attempt = 0; attempt < 600; attempt++)
-            while(true)
+            for (var attempt = 0; ; attempt++)
             {
                 var jObject = await GetResultAsync(pollingUri).ConfigureAwait(false);
                 var state = jObject["state"].ToString();
+
+                if (attempt == 600)
+                    Logger.Trace($"Failed to get a session after 60 seconds, current status: {state}");
 
                 if (state == expectedState)
                     return jObject;
@@ -94,8 +94,6 @@ namespace SparkSharp
                 // TODO: Decide a reasonable configurable delay
                 await Task.Delay(100).ConfigureAwait(false);
             }
-            
-            //throw new Exception($"Failed to get a session after 60 seconds, current status: {state}");
         }
 
         async Task<JObject> GetResultAsync(string uri)
