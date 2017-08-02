@@ -19,7 +19,8 @@
                 Conf =
                 {
                     ["spark.jars.packages"] = "graphframes:graphframes:0.4.0-spark2.0-s_2.11",
-                    ["spark.jars.excludes"] = "org.scala-lang:scala-reflect"
+                    ["spark.jars.excludes"] = "org.scala-lang:scala-reflect",
+                    ["spark.dynamicAllocation.enabled"] = "true"
                 }
             };
     }
