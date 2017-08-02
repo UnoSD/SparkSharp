@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace SparkSharp
 {
-    class CosmosExample
+    static class CosmosExample
     {
         internal static async Task ExampleAsync(NameValueCollection settings)
         {
-            using (var client = new HdInsightClient(settings["ClusterName"], settings["ClusterUsername"], settings["ClusterPassword"]))
+            using (var client = new LivyClient("http://127.0.0.1:8998", settings["ClusterUsername"], settings["ClusterPassword"]))
             using (var cosmos = new CosmosDbLivySession(client, CosmosSettings.GetSettings(settings), CosmosExampleSessionConfiguration.GetConfiguration()))
             {
-                const string sql = "SELECT contactIdentifier AS ContactIdentifier, COUNT(*) AS Count FROM cosmos GROUP BY contactIdentifier ORDER BY COUNT(*) DESC LIMIT 20";
+                const string sql = "SELECT * FROM cosmos LIMIT 1";
+                //const string sql = "SELECT contactIdentifier AS ContactIdentifier, COUNT(*) AS Count FROM cosmos GROUP BY contactIdentifier ORDER BY COUNT(*) DESC LIMIT 20";
                 
                 var result = await cosmos.QuerySparkSqlWithMetricsAsync<Result>(sql);
 
