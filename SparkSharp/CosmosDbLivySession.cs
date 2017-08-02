@@ -15,12 +15,20 @@ namespace SparkSharp
         public CosmosDbLivySession(ILivyClient client, CosmosCollectionSettings settings, LivySessionConfiguration livyConfig)
         {
             _settings = settings;
-            _session = new Lazy<Task<ILivySession>>(() =>
-            {
-                var livySessionConfiguration = livyConfig.Clone();
-                livySessionConfiguration.Name += " " + Interlocked.Increment(ref _sessionCount);
-                return client.CreateSessionAsync(livySessionConfiguration);
-            });
+            _session = new Lazy<Task<ILivySession>>(() => CreateSessionAsync(client, livyConfig));
+        }
+
+        async Task<ILivySession> CreateSessionAsync(ILivyClient client, LivySessionConfiguration livyConfig)
+        {
+            var livySessionConfiguration = livyConfig.Clone();
+
+            livySessionConfiguration.Name += " " + Interlocked.Increment(ref _sessionCount);
+
+            var session = await client.CreateSessionAsync(livySessionConfiguration).ConfigureAwait(false);
+
+            await session.ExecuteStatementAsync<object>(GetInitializeContextCode()).ConfigureAwait(false);
+
+            return session;
         }
 
         /// <summary>
@@ -63,15 +71,9 @@ namespace SparkSharp
         /// </summary>
         public async Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sql)
         {
-            var initializeContextCode = _session.IsValueCreated ?
-                                        string.Empty :
-                                        GetInitializeContextCode();
-
             var session = await _session.Value.ConfigureAwait(false);
 
             var scalaCode = $@"
-{initializeContextCode}
-
 val docs = spark.sql(""{sql}"")
 
 println(docs.toJSON.collect.mkString(""["", "","", ""]""))

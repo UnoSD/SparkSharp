@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace SparkSharp
 {
-    class AsyncLimitedDisposableObjectPool<T> : AsyncLimitedObjectPool<AsyncLimitedDisposableObjectPool<T>.PoolObject>
+    public class AsyncLimitedDisposableObjectPool<T> : AsyncLimitedObjectPool<AsyncLimitedDisposableObjectPool<T>.PoolObject>
     {
-        internal class PoolObject : IDisposable
+        public class PoolObject : IDisposable
         {
             public T Value { get; }
             readonly AsyncLimitedObjectPool<PoolObject> _pool;

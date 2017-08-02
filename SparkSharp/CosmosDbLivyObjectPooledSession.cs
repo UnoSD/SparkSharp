@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SparkSharp
 {
-    class CosmosDbLivyObjectPooledSession : AsyncLimitedDisposableObjectPool<CosmosDbLivySession>, ISparkSqlSession
+    public class CosmosDbLivyObjectPooledSession : AsyncLimitedDisposableObjectPool<CosmosDbLivySession>, ISparkSqlSession
     {
         public CosmosDbLivyObjectPooledSession(ILivyClient client, CosmosCollectionSettings settings, LivySessionConfiguration config, int max) :
             base(() => CreateSession(client, settings, config), max)
