@@ -23,29 +23,24 @@ namespace SparkSharp
             _sessionPath = sessionPath;
         }
 
-        // TODO: Check success without throwing exception (retry)
-#if DEBUG
-        public async Task CloseAsync()
-        {
-            var response = await _client.DeleteAsync(_sessionPath).ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-        }
-#else
         public Task CloseAsync() => _client.DeleteAsync(_sessionPath);
-#endif
 
         public void Dispose() => CloseAsync().Wait();
 
-        public async Task<T> ExecuteStatementAsync<T>(string code)
+        public Task<T> ExecuteStatementAsync<T>(string code) => ExecuteStatementAsync<T>(code, false);
+
+        public async Task<T> ExecuteStatementAsync<T>(string code, bool silently)
         {
-            Logger.Trace("Waiting for session to be ready...");
+            if(!silently)
+                Logger.Trace("Waiting for session to be ready...");
 
             await WaitForSessionAsync().ConfigureAwait(false);
 
-            Logger.Trace("Session ready");
+            if (!silently)
+                Logger.Trace("Session ready");
 
-            Logger.Trace("Running code...");
+            if (!silently)
+                Logger.Trace("Running code...");
 
             var response = await _client.PostAsync($"{_sessionPath}/statements", new { code })
                                         .ConfigureAwait(false);
@@ -54,7 +49,8 @@ namespace SparkSharp
 
             var resultPollingRelativePath = response.Headers.Location.AsRelativePath();
 
-            Logger.Trace("Waiting for results to be ready...");
+            if (!silently)
+                Logger.Trace("Waiting for results to be ready...");
 
             var result = await WaitForStateAsync(resultPollingRelativePath, "available").ConfigureAwait(false);
             var output = result["output"];
@@ -63,7 +59,8 @@ namespace SparkSharp
 
             var data = output["data"]["text/plain"].ToString();
 
-            Logger.Trace("Results ready");
+            if (!silently)
+                Logger.Trace("Results ready");
 
             return JsonConvert.DeserializeObject<T>(data);
         }

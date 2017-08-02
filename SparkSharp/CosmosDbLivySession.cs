@@ -26,7 +26,7 @@ namespace SparkSharp
 
             var session = await client.CreateSessionAsync(livySessionConfiguration).ConfigureAwait(false);
 
-            await session.ExecuteStatementAsync<object>(GetInitializeContextCode()).ConfigureAwait(false);
+            await session.ExecuteStatementAsync<object>(GetInitializeContextCode(), true).ConfigureAwait(false);
 
             return session;
         }

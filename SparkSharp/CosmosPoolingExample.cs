@@ -11,7 +11,7 @@ namespace SparkSharp
     {
         internal static async Task ExampleAsync(NameValueCollection settings)
         {
-            using (var client = new HdInsightClient("transactionaldatatest", settings["ClusterUsername"], settings["ClusterPassword"]))
+            using (var client = new HdInsightClient(settings["ClusterName"], settings["ClusterUsername"], settings["ClusterPassword"]))
             using(var cosmos = new CosmosDbLivyObjectPooledSession(client, CosmosSettings.GetSettings(settings), CosmosExampleSessionConfiguration.GetConfiguration(), 2))
             {
                 const string sql = "SELECT * FROM cosmos LIMIT 1";
