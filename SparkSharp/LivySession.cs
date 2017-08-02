@@ -82,8 +82,12 @@ namespace SparkSharp
                 var jObject = await GetResultAsync(pollingUri).ConfigureAwait(false);
                 var state = jObject["state"].ToString();
 
-                if (attempt == 300)
-                    Logger.Trace($"Failed to get the session into desired state {expectedState} after 30 seconds, current status: {state}");
+                if (attempt == 200)
+                {
+                    Logger.Trace($"Failed to get the session into desired state {expectedState} after 20 seconds, current status: {state}");
+
+                    attempt = 0;
+                }
 
                 if (state == expectedState)
                     return jObject;
