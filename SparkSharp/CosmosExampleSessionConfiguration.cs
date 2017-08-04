@@ -1,16 +1,16 @@
 ﻿namespace SparkSharp
 {
-    class CosmosExampleSessionConfiguration
+    public class CosmosExampleSessionConfiguration
     {
-        internal static LivySessionConfiguration GetConfiguration() => 
+        public static LivySessionConfiguration GetConfiguration() => 
             new LivySessionConfiguration
             {
                 Kind = LivySessionKind.Spark,
                 Name = "SparkSharp testing",
-                ExecutorMemory = "11G",
-                ExecutorCores = 15,
-                NumExecutors = 4,
-                DriverCores = 4,
+                ExecutorMemory = null,
+                ExecutorCores = null,
+                NumExecutors = null,
+                DriverCores = null,
                 Jars =
                 {
                     "wasb:///example/jars/azure-cosmosdb-spark-0.0.3-SNAPSHOT.jar",
