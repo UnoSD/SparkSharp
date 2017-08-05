@@ -10,6 +10,7 @@ namespace SparkSharp
     {
         readonly CosmosCollectionSettings _settings;
         readonly Lazy<Task<ILivySession>> _session;
+        volatile bool _sessionInitialized;
         static int _sessionCount;
 
         public CosmosDbLivySession(ILivyClient client, CosmosCollectionSettings settings, LivySessionConfiguration livyConfig)
@@ -18,17 +19,13 @@ namespace SparkSharp
             _session = new Lazy<Task<ILivySession>>(() => CreateSessionAsync(client, livyConfig));
         }
 
-        async Task<ILivySession> CreateSessionAsync(ILivyClient client, LivySessionConfiguration livyConfig)
+        static Task<ILivySession> CreateSessionAsync(ILivyClient client, LivySessionConfiguration livyConfig)
         {
             var livySessionConfiguration = livyConfig.Clone();
 
             livySessionConfiguration.Name += " " + Interlocked.Increment(ref _sessionCount);
 
-            var session = await client.CreateSessionAsync(livySessionConfiguration).ConfigureAwait(false);
-
-            await session.ExecuteStatementAsync<object>(GetInitializeContextCode(), true).ConfigureAwait(false);
-
-            return session;
+            return client.CreateSessionAsync(livySessionConfiguration);
         }
 
         /// <summary>
@@ -41,7 +38,7 @@ namespace SparkSharp
 
             stopwatch.Start();
 
-            var results = await QuerySparkSqlAsync<T>(sql).ConfigureAwait(false);
+            var results = await QuerySparkSqlAsync<T>(sql, null).ConfigureAwait(false);
             
             return new TimedResult<IEnumerable<T>> { Result = results, Elapsed = stopwatch.Elapsed };
         }
@@ -65,24 +62,42 @@ namespace SparkSharp
             return state == "idle";
         }
 
+        public Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sql) => 
+            QuerySparkSqlAsync<T>(sql, null);
+
         /// <summary>
         /// Use cosmos as source.
         /// Example: SELECT * FROM cosmos
         /// </summary>
-        public async Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sql)
+        /// <param name="sparkSqlQuery">The Spark SQL query</param>
+        /// <param name="cosmosSqlQuery">The base Cosmos DB query with Document DB SQL; use a query that pulls only required data from cosmos, minimizing the network transfer between Spark nodes and Cosmos. If null, it uses SELECT * from data in Cosmos</param>
+        public async Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sparkSqlQuery, string cosmosSqlQuery)
         {
             var session = await _session.Value.ConfigureAwait(false);
 
+            string initializeContextCode = null;
+
+            if(cosmosSqlQuery != null)
+                initializeContextCode = GetInitializeContextCode(cosmosSqlQuery);
+            else if (!_sessionInitialized)
+                initializeContextCode = GetInitializeContextCode("SELECT * FROM c");
+
             var scalaCode = $@"
-val docs = spark.sql(""{sql}"")
+{initializeContextCode}
+
+val docs = spark.sql(s""""""{sparkSqlQuery}"""""")
 
 println(docs.toJSON.collect.mkString(""["", "","", ""]""))
 ";
 
-            return await session.ExecuteStatementAsync<IEnumerable<T>>(scalaCode).ConfigureAwait(false);
+            var results = await session.ExecuteStatementAsync<IEnumerable<T>>(scalaCode).ConfigureAwait(false);
+
+            _sessionInitialized = true;
+
+            return results;
         }
 
-        string GetInitializeContextCode() => $@"
+        string GetInitializeContextCode(string cosmosSqlQuery) => $@"
 import com.microsoft.azure.cosmosdb.spark.schema._
 import com.microsoft.azure.cosmosdb.spark._
 import com.microsoft.azure.cosmosdb.spark.config.Config
@@ -92,7 +107,9 @@ val config = Config(Map(""Endpoint""         -> ""https://{_settings.Name}.docum
                         ""Database""         -> ""{_settings.Database}"",
                         ""preferredRegions"" -> ""{_settings.PreferredRegions};"",
                         ""Collection""       -> ""{_settings.Collection}"", 
-                        ""SamplingRatio""    -> ""1.0""))
+                        ""SamplingRatio""    -> ""1.0"",
+                        ""query_pagesize""   -> ""2147483647"",
+                        ""query_custom""     -> ""{cosmosSqlQuery}""))
 
 spark.sqlContext.read.cosmosDB(config).createOrReplaceTempView(""cosmos"")
 ";

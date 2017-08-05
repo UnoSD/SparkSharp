@@ -18,6 +18,9 @@ namespace SparkSharp
                 case nameof(CosmosPoolingExample):
                     CosmosPoolingExample.ExampleAsync(settings).GetAwaiter().GetResult();
                     break;
+                case nameof(CosmosPoolingBaseQueryExample):
+                    CosmosPoolingBaseQueryExample.ExampleAsync(settings).GetAwaiter().GetResult();
+                    break;
                 case nameof(CosmosExample):
                     CosmosExample.ExampleAsync(settings).GetAwaiter().GetResult();
                     break;

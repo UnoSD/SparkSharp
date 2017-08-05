@@ -18,10 +18,13 @@ namespace SparkSharp
             return session;
         }
 
-        public async Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sql)
+        public async Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sparkSqlQuery, string cosmosSqlQuery)
         {
             using (var session = await RentAsync().ConfigureAwait(false))
-                return await session.Value.QuerySparkSqlAsync<T>(sql).ConfigureAwait(false);
+                return await session.Value.QuerySparkSqlAsync<T>(sparkSqlQuery, cosmosSqlQuery).ConfigureAwait(false);
         }
+
+        public Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sql) => 
+            QuerySparkSqlAsync<T>(sql, null);
     }
 }
