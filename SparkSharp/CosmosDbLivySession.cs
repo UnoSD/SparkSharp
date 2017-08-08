@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SparkSharp
 {
-    public class CosmosDbLivySession : IDisposable, ISparkSqlSession
+    public class CosmosDbLivySession : IDisposable
     {
         readonly CosmosCollectionSettings _settings;
         readonly Lazy<Task<ILivySession>> _session;
@@ -43,7 +43,7 @@ namespace SparkSharp
 
             var state = await session.GetSessionStateAsync().ConfigureAwait(false);
 
-            return state == "idle";
+            return state == SessionState.Idle;
         }
 
         public Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sql) => 
@@ -98,7 +98,14 @@ val config = Config(Map(""Endpoint""         -> ""https://{_settings.Name}.docum
 spark.sqlContext.read.cosmosDB(config).createOrReplaceTempView(""cosmos"")
 ";
 
-        public void Dispose() => CloseAsync().GetAwaiter().GetResult();
+        public void Dispose()
+        {
+            try
+            {
+                CloseAsync().GetAwaiter().GetResult();
+            }
+            catch { /**/ }
+        }
 
         public async Task CloseAsync()
         {

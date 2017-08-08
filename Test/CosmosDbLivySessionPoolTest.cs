@@ -82,7 +82,7 @@ namespace Test
 
             var sessions = result.GroupBy(s => s).Select(g => new { g.Key, Count = g.Count() });
 
-            ILivySession GetSession(ISparkSqlSession sqlSession) => 
+            ILivySession GetSession(CosmosDbLivySession sqlSession) => 
                 ((Lazy<Task<ILivySession>>)
                 typeof(CosmosDbLivySession).GetField("_session", BindingFlags.NonPublic | BindingFlags.Instance)?
                                            .GetValue(sqlSession))?.Value.Result;

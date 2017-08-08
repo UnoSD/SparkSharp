@@ -28,7 +28,7 @@ namespace SparkSharp
             if (AvailableObjects.TryDequeue(out var obj))
                 return new ValueTask<T>(obj);
 
-            if (_rented >= _maxObjects)
+            if (Volatile.Read(ref _rented) >= _maxObjects)
             {
                 var promise = new TaskCompletionSource<T>();
 
@@ -36,9 +36,7 @@ namespace SparkSharp
 
                 return new ValueTask<T>(promise.Task);
             }
-
-            Thread.MemoryBarrier();
-
+            
             Interlocked.Increment(ref _rented);
 
             return new ValueTask<T>(_factory());

@@ -21,7 +21,7 @@ namespace SparkSharp
             _maxSessions = maxSessions;
         }
 
-        async Task<ISparkSqlSession> GetAvailableSessionFromPoolAsync()
+        async Task<CosmosDbLivySession> GetAvailableSessionFromPoolAsync()
         {
             var availableSessions = _sessions.Select(session => new { session, available = session.GetSessionAvailableAsync() })
                                              .ToList();
@@ -40,7 +40,7 @@ namespace SparkSharp
             return null;
         }
         
-        public async Task<ISparkSqlSession> GetSessionAsync()
+        public async Task<CosmosDbLivySession> GetSessionAsync()
         {
             var availableSession = await GetAvailableSessionFromPoolAsync().ConfigureAwait(false);
 

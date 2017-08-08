@@ -23,11 +23,18 @@ namespace SparkSharp
 
         public Task CloseAsync() => _client.DeleteAsync(_sessionPath);
 
-        public void Dispose() => CloseAsync().Wait();
+        public void Dispose()
+        {
+            try
+            {
+                CloseAsync().GetAwaiter().GetResult();
+            }
+            catch { /**/ }
+        }
 
         public Task<T> ExecuteStatementAsync<T>(string code) => ExecuteStatementAsync<T>(code, false);
 
-        public async Task<T> ExecuteStatementAsync<T>(string code, bool silently)
+        async Task<T> ExecuteStatementAsync<T>(string code, bool silently)
         {
             if(!silently)
                 Log("Waiting for session to be ready...");
@@ -107,11 +114,11 @@ namespace SparkSharp
             return JObject.Parse(result);
         }
 
-        public async Task<string> GetSessionStateAsync()
+        public async Task<SessionState> GetSessionStateAsync()
         {
             var jObject = await GetResultAsync(_sessionPath).ConfigureAwait(false);
 
-            var state = jObject["state"].ToString();
+            var state = (SessionState)Enum.Parse(typeof(SessionState), jObject["state"].ToString(), true);
 
             return state;
         }
