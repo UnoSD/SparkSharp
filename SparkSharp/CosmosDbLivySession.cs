@@ -109,7 +109,7 @@ val config = Config(Map(""Endpoint""         -> ""https://{_settings.Name}.docum
                         ""Collection""       -> ""{_settings.Collection}"", 
                         ""SamplingRatio""    -> ""1.0"",
                         ""query_pagesize""   -> ""2147483647"",
-                        ""query_custom""     -> ""{cosmosSqlQuery}""))
+                        ""query_custom""     -> s""""""{cosmosSqlQuery}""""""))
 
 spark.sqlContext.read.cosmosDB(config).createOrReplaceTempView(""cosmos"")
 ";

@@ -32,15 +32,15 @@ namespace SparkSharp
         public async Task<T> ExecuteStatementAsync<T>(string code, bool silently)
         {
             if(!silently)
-                Logger.Trace("Waiting for session to be ready...");
+                Log("Waiting for session to be ready...");
 
             await WaitForSessionAsync().ConfigureAwait(false);
 
             if (!silently)
-                Logger.Trace("Session ready");
+                Log("Session ready");
 
             if (!silently)
-                Logger.Trace("Running code...");
+                Log("Running code...");
 
             var response = await _client.PostAsync($"{_sessionPath}/statements", new { code })
                                         .ConfigureAwait(false);
@@ -50,7 +50,7 @@ namespace SparkSharp
             var resultPollingRelativePath = response.Headers.Location.AsRelativePath();
 
             if (!silently)
-                Logger.Trace("Waiting for results to be ready...");
+                Log("Waiting for results to be ready...");
 
             var result = await WaitForStateAsync(resultPollingRelativePath, "available").ConfigureAwait(false);
             var output = result["output"];
@@ -60,7 +60,7 @@ namespace SparkSharp
             var data = output["data"]["text/plain"].ToString();
 
             if (!silently)
-                Logger.Trace("Results ready");
+                Log("Results ready");
 
             return JsonConvert.DeserializeObject<T>(data);
         }
@@ -84,7 +84,7 @@ namespace SparkSharp
 
                 if (attempt == 200)
                 {
-                    Logger.Trace($"Failed to get the session into desired state {expectedState} after 20 seconds, current status: {state}");
+                    Log($"Failed to get the session into desired state {expectedState} after 20 seconds, current status: {state}");
 
                     attempt = 0;
                 }
@@ -117,5 +117,7 @@ namespace SparkSharp
 
             return state;
         }
+
+        void Log(string message) => Logger.Trace($"[{_config.Name}] {message}");
     }
 }
