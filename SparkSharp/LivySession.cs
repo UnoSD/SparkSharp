@@ -13,9 +13,7 @@ namespace SparkSharp
         readonly HttpClient _client;
         readonly LivySessionConfiguration _config;
         readonly string _sessionPath;
-
-        public LivySessionConfiguration Configuration => _config.Clone();
-
+        
         public LivySession(HttpClient client, LivySessionConfiguration config, string sessionPath)
         {
             _client = client;

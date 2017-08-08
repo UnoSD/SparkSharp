@@ -34,10 +34,8 @@ namespace SparkSharp
         /// </summary>
         public async Task<TimedResult<IEnumerable<T>>> QuerySparkSqlWithMetricsAsync<T>(string sql)
         {
-            var stopwatch = new Stopwatch();
-
-            stopwatch.Start();
-
+            var stopwatch = Stopwatch.StartNew();
+            
             var results = await QuerySparkSqlAsync<T>(sql, null).ConfigureAwait(false);
             
             return new TimedResult<IEnumerable<T>> { Result = results, Elapsed = stopwatch.Elapsed };
