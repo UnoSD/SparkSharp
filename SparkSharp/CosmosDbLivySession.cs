@@ -32,12 +32,15 @@ namespace SparkSharp
         /// Use cosmos as source.
         /// Example: SELECT * FROM cosmos
         /// </summary>
-        public async Task<TimedResult<IEnumerable<T>>> QuerySparkSqlWithMetricsAsync<T>(string sql)
+        public Task<TimedResult<IEnumerable<T>>> QuerySparkSqlWithMetricsAsync<T>(string sql) =>
+            QuerySparkSqlWithMetricsAsync<T>(sql, null);
+        
+        public async Task<TimedResult<IEnumerable<T>>> QuerySparkSqlWithMetricsAsync<T>(string sparkSql, string cosmosSqlQuery)
         {
             var stopwatch = Stopwatch.StartNew();
-            
-            var results = await QuerySparkSqlAsync<T>(sql, null).ConfigureAwait(false);
-            
+
+            var results = await QuerySparkSqlAsync<T>(sparkSql, cosmosSqlQuery).ConfigureAwait(false);
+
             return new TimedResult<IEnumerable<T>> { Result = results, Elapsed = stopwatch.Elapsed };
         }
 

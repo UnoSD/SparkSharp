@@ -49,6 +49,7 @@
     <Compile Include="AsyncLimitedDisposableObjectPool.cs" />
     <Compile Include="AsyncLimitedObjectPool.cs" />
     <Compile Include="AsyncObjectPool.cs" />
+    <Compile Include="CosmosBaseQueryExample.cs" />
     <Compile Include="CosmosDbLivyObjectPooledSession.cs" />
     <Compile Include="CosmosCollectionSettings.cs" />
     <Compile Include="CosmosDbLivySession.cs" />

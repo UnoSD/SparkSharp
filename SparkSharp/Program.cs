@@ -15,6 +15,9 @@ namespace SparkSharp
 
             switch (settings["AutoStartExample"])
             {
+                case nameof(CosmosBaseQueryExample):
+                    CosmosBaseQueryExample.ExampleAsync(settings).GetAwaiter().GetResult();
+                    break;
                 case nameof(CosmosPoolingExample):
                     CosmosPoolingExample.ExampleAsync(settings).GetAwaiter().GetResult();
                     break;
