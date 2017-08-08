@@ -42,6 +42,9 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationSettings.cs" />
@@ -58,6 +61,7 @@
     <Compile Include="CosmosPoolingBaseQueryExample.cs" />
     <Compile Include="CosmosPoolingExample.cs" />
     <Compile Include="CosmosSettings.cs" />
+    <Compile Include="DelegatesExtensions.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="HdInsightClient.cs" />
     <Compile Include="HttpClientExtensions.cs" />
@@ -77,7 +81,6 @@
     <Compile Include="SimpleExampleSessionConfiguration.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TaskExtensions.cs" />
-    <Compile Include="TimedResult.cs" />
     <Compile Include="UriExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

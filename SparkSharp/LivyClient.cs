@@ -42,7 +42,7 @@ namespace SparkSharp
         {
             config = config ?? LivySessionConfiguration.Default;
 
-            Logger.Trace("Creating session...");
+            Logger.Trace($"[{config.Name}] Creating session...");
 
             var response = await _client.Value.PostAsync("sessions", config).ConfigureAwait(false);
             

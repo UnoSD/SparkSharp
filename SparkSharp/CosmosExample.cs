@@ -16,14 +16,9 @@ namespace SparkSharp
             {
                 const string sql = "SELECT contactIdentifier AS ContactIdentifier, COUNT(*) AS Count FROM cosmos GROUP BY contactIdentifier ORDER BY COUNT(*) DESC LIMIT 20";
                 
-                // Create session and warm up
-                await cosmos.QuerySparkSqlAsync<Result>(sql);
-
-                var result = await cosmos.QuerySparkSqlWithMetricsAsync<Result>(sql);
-
-                Console.WriteLine($"Elpsed: {result.Elapsed}");
-
-                result.Result.ToList().ForEach(t => Console.WriteLine($"{t.ContactIdentifier}:{t.Count}"));
+                var results = await cosmos.QuerySparkSqlAsync<Result>(sql);
+                
+                results.ToList().ForEach(t => Console.WriteLine($"{t.ContactIdentifier}:{t.Count}"));
             }
 
             Console.ReadKey();

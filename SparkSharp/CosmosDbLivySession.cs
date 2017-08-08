@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,22 +25,6 @@ namespace SparkSharp
             livySessionConfiguration.Name += " " + Interlocked.Increment(ref _sessionCount);
 
             return client.CreateSessionAsync(livySessionConfiguration);
-        }
-
-        /// <summary>
-        /// Use cosmos as source.
-        /// Example: SELECT * FROM cosmos
-        /// </summary>
-        public Task<TimedResult<IEnumerable<T>>> QuerySparkSqlWithMetricsAsync<T>(string sql) =>
-            QuerySparkSqlWithMetricsAsync<T>(sql, null);
-        
-        public async Task<TimedResult<IEnumerable<T>>> QuerySparkSqlWithMetricsAsync<T>(string sparkSql, string cosmosSqlQuery)
-        {
-            var stopwatch = Stopwatch.StartNew();
-
-            var results = await QuerySparkSqlAsync<T>(sparkSql, cosmosSqlQuery).ConfigureAwait(false);
-
-            return new TimedResult<IEnumerable<T>> { Result = results, Elapsed = stopwatch.Elapsed };
         }
 
         public async Task WaitForSessionAsync()
@@ -75,13 +58,13 @@ namespace SparkSharp
         public async Task<IEnumerable<T>> QuerySparkSqlAsync<T>(string sparkSqlQuery, string cosmosSqlQuery)
         {
             var session = await _session.Value.ConfigureAwait(false);
-
+            
             string initializeContextCode = null;
 
             if(cosmosSqlQuery != null)
                 initializeContextCode = GetInitializeContextCode(cosmosSqlQuery);
             else if (!_sessionInitialized)
-                initializeContextCode = GetInitializeContextCode("SELECT * FROM c");
+                initializeContextCode = GetInitializeContextCode("SELECT * FROM cosmos");
 
             var scalaCode = $@"
 {initializeContextCode}
