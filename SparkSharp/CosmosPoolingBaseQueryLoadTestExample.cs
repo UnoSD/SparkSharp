@@ -68,11 +68,13 @@ namespace SparkSharp
         static async Task InitializeAllPoolSessionsAsync(CosmosDbLivyObjectPooledSession cosmos, int pooledSessions)
         {
             var sessions = await Enumerable.Repeat(cosmos, pooledSessions)
-                                           .Select(c => c.RentAsync());
+                                           .Select(async pool =>
+                                           {
+                                               try { return await pool.RentAsync(); }
+                                               catch { return null; }
+                                           });
 
-            await sessions.Select(session => session.Value.WaitForSessionAsync());
-
-            foreach (var session in sessions)
+            foreach (var session in sessions.Where(session => session != null))
                 cosmos.Return(session);
         }
     }
