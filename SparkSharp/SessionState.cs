@@ -2,6 +2,14 @@
 {
     public enum SessionState
     {
-        Idle
+        Unknown = 0,
+        Available,
+        Idle,
+        Dead,
+        Error,
+        Starting,
+        Waiting,
+        Running,
+        Busy
     }
 }

@@ -20,5 +20,7 @@ namespace SparkSharp
         public int? DriverCores { get; set; }
         public IList<string> Jars { get; } = new List<string>();
         public IDictionary<string, string> Conf { get; } = new Dictionary<string, string>();
+        public string Url { get; set; }
+        public string ApplicationId { get; set; }
     }
 }
