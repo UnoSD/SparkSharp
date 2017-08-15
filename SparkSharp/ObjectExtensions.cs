@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace SparkSharp
@@ -11,10 +12,12 @@ namespace SparkSharp
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        public static string ToJsonString(this object value) => 
+        internal static string ToJsonString(this object value) => 
             JsonConvert.SerializeObject(value, JsonSerializerSettings);
 
         // TODO: Replace this hacky cloning
-        public static T Clone<T>(this T obj) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
+        internal static T Clone<T>(this T obj) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
+
+        internal static bool In<T>(this T value, params T[] list) => list.Contains(value);
     }
 }

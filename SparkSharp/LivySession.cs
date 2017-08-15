@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -36,7 +38,7 @@ namespace SparkSharp
 
         async Task<T> ExecuteStatementAsync<T>(string code, bool silently)
         {
-            if(!silently)
+            if (!silently)
                 Log("Waiting for session to be ready...");
 
             await WaitForSessionAsync().ConfigureAwait(false);
@@ -57,7 +59,7 @@ namespace SparkSharp
             if (!silently)
                 Log("Waiting for results to be ready...");
 
-            var result = await WaitForStateAsync(resultPollingRelativePath, "available").ConfigureAwait(false);
+            var result = await WaitForStatesAsync(resultPollingRelativePath, "available").ConfigureAwait(false);
             var output = result["output"];
 
             ThrowIfError(output);
@@ -78,24 +80,25 @@ namespace SparkSharp
                 throw new Exception($"{output["evalue"]}\n\n{output["traceback"]}");
         }
 
-        public Task WaitForSessionAsync() => WaitForStateAsync(_sessionPath, "idle");
+        public Task WaitForSessionAsync() => WaitForStatesAsync(_sessionPath, "idle");
 
-        async Task<JObject> WaitForStateAsync(string pollingUri, string expectedState)
+        async Task<JObject> WaitForStatesAsync(string pollingUri, params string[] expectedStates)
         {
             for (var attempt = 0; ; attempt++)
             {
                 var jObject = await GetResultAsync(pollingUri).ConfigureAwait(false);
-                var state = jObject["state"].ToString();
 
-                if (attempt == 200)
+                var state = jObject["state"].ToString();
+                
+                if (expectedStates.Contains(state))
+                    return jObject;
+
+                if (attempt == 300)
                 {
-                    Log($"Failed to get the session into desired state {expectedState} after 20 seconds, current status: {state}");
+                    Log($"Failed to get the session into desired state {expectedStates.Join(", ")} after 30 seconds, current status: {state}");
 
                     attempt = 0;
                 }
-
-                if (state == expectedState)
-                    return jObject;
 
                 // TODO: Decide a reasonable configurable delay
                 await Task.Delay(100).ConfigureAwait(false);
