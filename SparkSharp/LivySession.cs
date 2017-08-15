@@ -96,6 +96,9 @@ namespace SparkSharp
 
                 var state = jObject["state"].ToString();
 
+                if (!Enum.TryParse<SessionState>(jObject["state"].ToString(), true, out var sessionState))
+                    throw new Exception($"Unknown state {jObject["state"]}");
+
                 if (expectedStates.Contains(state))
                     return jObject;
 
@@ -114,7 +117,7 @@ namespace SparkSharp
         async Task<JObject> GetResultAsync(string uri)
         {
             var response = await _client.GetAsync(uri).ConfigureAwait(false);
-            
+
             var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return JObject.Parse(result);
