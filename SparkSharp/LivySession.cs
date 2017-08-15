@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -10,12 +9,10 @@ namespace SparkSharp
 {
     class LivySession : ILivySession
     {
-        static readonly JObject ErrorJObject = new JObject { { "state", "error" } };
-
         readonly HttpClient _client;
         readonly LivySessionConfiguration _config;
         readonly string _sessionPath;
-        
+
         public LivySession(HttpClient client, LivySessionConfiguration config, string sessionPath)
         {
             _client = client;
@@ -52,6 +49,9 @@ namespace SparkSharp
             var response = await _client.PostAsync($"{_sessionPath}/statements", new { code })
                                         .ConfigureAwait(false);
 
+            if (!response.IsSuccessStatusCode)
+                Log(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+
             response.EnsureSuccessStatusCode();
 
             var resultPollingRelativePath = response.Headers.Location.AsRelativePath();
@@ -80,7 +80,13 @@ namespace SparkSharp
                 throw new Exception($"{output["evalue"]}\n\n{output["traceback"]}");
         }
 
-        public Task WaitForSessionAsync() => WaitForStatesAsync(_sessionPath, "idle");
+        public async Task WaitForSessionAsync()
+        {
+            var result = await WaitForStatesAsync(_sessionPath, "idle", "error", "dead", "shutting_down").ConfigureAwait(false);
+
+            if (result["state"].ToString() != "idle")
+                throw new Exception(result.ToString());
+        }
 
         async Task<JObject> WaitForStatesAsync(string pollingUri, params string[] expectedStates)
         {
@@ -89,7 +95,7 @@ namespace SparkSharp
                 var jObject = await GetResultAsync(pollingUri).ConfigureAwait(false);
 
                 var state = jObject["state"].ToString();
-                
+
                 if (expectedStates.Contains(state))
                     return jObject;
 
@@ -108,10 +114,7 @@ namespace SparkSharp
         async Task<JObject> GetResultAsync(string uri)
         {
             var response = await _client.GetAsync(uri).ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
-                return ErrorJObject;
-
+            
             var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return JObject.Parse(result);
