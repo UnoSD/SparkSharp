@@ -10,6 +10,7 @@
         Starting,
         Waiting,
         Running,
-        Busy
+        Busy,
+        ShuttingDown
     }
 }

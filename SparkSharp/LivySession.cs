@@ -59,7 +59,8 @@ namespace SparkSharp
             if (!silently)
                 Log("Waiting for results to be ready...");
 
-            var result = await WaitForStatesAsync(resultPollingRelativePath, "available").ConfigureAwait(false);
+            // TODO: This is not a session state, maybe a statement state?
+            var result = await WaitForStatesAsync(resultPollingRelativePath, SessionState.Available).ConfigureAwait(false);
             var output = result["output"];
 
             ThrowIfError(output);
@@ -82,29 +83,26 @@ namespace SparkSharp
 
         public async Task WaitForSessionAsync()
         {
-            var result = await WaitForStatesAsync(_sessionPath, "idle", "error", "dead", "shutting_down").ConfigureAwait(false);
+            var result = await WaitForStatesAsync(_sessionPath, SessionState.Idle, SessionState.Error, SessionState.Dead, SessionState.ShuttingDown).ConfigureAwait(false);
 
             if (result["state"].ToString() != "idle")
                 throw new Exception(result.ToString());
         }
 
-        async Task<JObject> WaitForStatesAsync(string pollingUri, params string[] expectedStates)
+        async Task<JObject> WaitForStatesAsync(string pollingUri, params SessionState[] expectedStates)
         {
             for (var attempt = 0; ; attempt++)
             {
                 var jObject = await GetResultAsync(pollingUri).ConfigureAwait(false);
 
-                var state = jObject["state"].ToString();
-
-                if (!Enum.TryParse<SessionState>(jObject["state"].ToString(), true, out var sessionState))
-                    throw new Exception($"Unknown state {jObject["state"]}");
+                var state = GetSessionState(jObject["state"].ToString());
 
                 if (expectedStates.Contains(state))
                     return jObject;
 
                 if (attempt == 300)
                 {
-                    Log($"Failed to get the session into desired state {expectedStates.Join(", ")} after 30 seconds, current status: {state}");
+                    Log($"Failed to get the session into desired state {expectedStates.AsStrings().Join(", ")} after 30 seconds, current status: {state}");
 
                     attempt = 0;
                 }
@@ -127,10 +125,15 @@ namespace SparkSharp
         {
             var jObject = await GetResultAsync(_sessionPath).ConfigureAwait(false);
 
-            var state = (SessionState)Enum.Parse(typeof(SessionState), jObject["state"].ToString(), true);
+            var state = GetSessionState(jObject["state"].ToString());
 
             return state;
         }
+
+        static SessionState GetSessionState(string stateString) => 
+            Enum.TryParse<SessionState>(stateString.Replace("_", ""), true, out var state) ? 
+            state :
+            throw new Exception($"Unknown state {stateString}");
 
         void Log(string message) => Logger.Trace($"[{_config.Name}] {message}");
     }

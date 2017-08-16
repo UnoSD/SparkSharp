@@ -11,7 +11,7 @@ namespace SparkSharp
     {
         internal static async Task ExampleAsync(NameValueCollection settings)
         {
-            const int pooledSessions = 15;
+            const int pooledSessions = 20;
             ServicePointManager.DefaultConnectionLimit = pooledSessions * 3;
 
             using (var client = new HdInsightClient(settings["ClusterName"], settings["ClusterUsername"], settings["ClusterPassword"]))
