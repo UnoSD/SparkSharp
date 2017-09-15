@@ -7,6 +7,7 @@ namespace SparkSharp
 {
     public class CosmosDbLivySession : IDisposable
     {
+        private readonly LivySessionConfiguration _livyConfig;
         readonly CosmosCollectionSettings _settings;
         readonly Lazy<Task<ILivySession>> _session;
         volatile bool _sessionInitialized;
@@ -15,6 +16,7 @@ namespace SparkSharp
         public CosmosDbLivySession(ILivyClient client, CosmosCollectionSettings settings, LivySessionConfiguration livyConfig)
         {
             _settings = settings;
+            _livyConfig = livyConfig;
             _session = new Lazy<Task<ILivySession>>(() => CreateSessionAsync(client, livyConfig));
         }
 
@@ -95,7 +97,11 @@ val config = Config(Map(""Endpoint""         -> ""https://{_settings.Name}.docum
                         ""query_pagesize""   -> ""2147483647"",
                         ""query_custom""     -> s""""""{cosmosSqlQuery}""""""))
 
-spark.sqlContext.read.cosmosDB(config).createOrReplaceTempView(""cosmos"")
+val view = spark.sqlContext.read.cosmosDB(config)
+
+{(_livyConfig.Cache ? "view.cache()" : null)}
+
+view.createOrReplaceTempView(""cosmos"")
 ";
 
         public void Dispose()

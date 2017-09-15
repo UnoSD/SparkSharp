@@ -22,5 +22,7 @@ namespace SparkSharp
         public IDictionary<string, string> Conf { get; } = new Dictionary<string, string>();
         public string Url { get; set; }
         public string ApplicationId { get; set; }
+        [JsonIgnore]
+        public bool Cache { get; set; }
     }
 }

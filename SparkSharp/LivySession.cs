@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
 
 namespace SparkSharp
 {
@@ -20,7 +21,12 @@ namespace SparkSharp
             _sessionPath = sessionPath;
         }
 
-        public Task CloseAsync() => _client.DeleteAsync(_sessionPath);
+        public Task CloseAsync()
+        {
+            Log("Closing session...");
+
+            return _client.DeleteAsync(_sessionPath);
+        }
 
         public void Dispose()
         {
@@ -86,7 +92,7 @@ namespace SparkSharp
             var result = await WaitForStatesAsync(_sessionPath, SessionState.Idle, SessionState.Error, SessionState.Dead, SessionState.ShuttingDown).ConfigureAwait(false);
 
             if (result["state"].ToString() != "idle")
-                throw new Exception(result.ToString());
+                throw new LivySessionException(_config.Name, $"{result}");
         }
 
         async Task<JObject> WaitForStatesAsync(string pollingUri, params SessionState[] expectedStates)
@@ -114,10 +120,13 @@ namespace SparkSharp
 
         async Task<JObject> GetResultAsync(string uri)
         {
-            var response = await _client.GetAsync(uri).ConfigureAwait(false);
+            var response = await Policy.Handle<TaskCanceledException>()
+                                       .RetryAsync(3)
+                                       .ExecuteAsync(() => _client.GetAsync(uri))
+                                       .ConfigureAwait(false);
 
             var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
+            
             return JObject.Parse(result);
         }
 
